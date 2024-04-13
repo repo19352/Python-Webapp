@@ -1,16 +1,7 @@
-FROM python:3.9-slim-buster
-
-LABEL Name="Python Flask Demo App" Version=1.4.2
-LABEL org.opencontainers.image.source = "https://github.com/jaiswaladi246/Python-Webapp.git"
-
-ARG srcDir=src
+FROM python:3.9-slim
 WORKDIR /app
-COPY $srcDir/requirements.txt .
+COPY . /app
 RUN pip install --no-cache-dir -r requirements.txt
-
-COPY $srcDir/run.py .
-COPY $srcDir/app ./app
-
 EXPOSE 5000
-
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "run:app"]
+ENV FLASK_APP=app.py
+CMD ["flask", "run", "--host=0.0.0.0"]
