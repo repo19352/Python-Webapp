@@ -1,0 +1,51 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: python1
+spec:
+  minReadySeconds: 3
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pythonwebapps1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%      
+  template:
+    metadata:
+      name: new-py
+      labels: 
+        app: pythonwebapps1
+    spec:
+      containers:
+        - image: meena835/pythonwebapps1
+          name: python
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+              ephemeral-storage: "2Gi"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"  
+              ephemeral-storage: "2Gi" 
+                
+    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ss
+spec: 
+  type: LoadBalancer
+  selector:
+    app: pythonwebapps1
+  ports:
+    - protocol: TCP
+      port: 30000
+      targetport: 5000                
